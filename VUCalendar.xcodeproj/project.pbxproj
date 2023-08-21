@@ -11,6 +11,8 @@
 		65D44BD02A91A13D00F1CC50 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D44BCF2A91A13D00F1CC50 /* ViewController.swift */; };
 		65D44BD22A91A13D00F1CC50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65D44BD12A91A13D00F1CC50 /* Assets.xcassets */; };
 		65D44BD52A91A13D00F1CC50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65D44BD32A91A13D00F1CC50 /* Main.storyboard */; };
+		65D44BDD2A91A15500F1CC50 /* VUCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D44BDC2A91A15500F1CC50 /* VUCalendarView.swift */; };
+		65D44BDF2A91A20A00F1CC50 /* VUCalendarDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D44BDE2A91A20A00F1CC50 /* VUCalendarDayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +22,8 @@
 		65D44BD12A91A13D00F1CC50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65D44BD42A91A13D00F1CC50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		65D44BD62A91A13D00F1CC50 /* VUCalendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VUCalendar.entitlements; sourceTree = "<group>"; };
+		65D44BDC2A91A15500F1CC50 /* VUCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VUCalendarView.swift; sourceTree = "<group>"; };
+		65D44BDE2A91A20A00F1CC50 /* VUCalendarDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VUCalendarDayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,8 @@
 				65D44BCF2A91A13D00F1CC50 /* ViewController.swift */,
 				65D44BD12A91A13D00F1CC50 /* Assets.xcassets */,
 				65D44BD32A91A13D00F1CC50 /* Main.storyboard */,
+				65D44BDC2A91A15500F1CC50 /* VUCalendarView.swift */,
+				65D44BDE2A91A20A00F1CC50 /* VUCalendarDayView.swift */,
 				65D44BD62A91A13D00F1CC50 /* VUCalendar.entitlements */,
 			);
 			path = VUCalendar;
@@ -132,7 +138,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				65D44BD02A91A13D00F1CC50 /* ViewController.swift in Sources */,
+				65D44BDF2A91A20A00F1CC50 /* VUCalendarDayView.swift in Sources */,
 				65D44BCE2A91A13D00F1CC50 /* AppDelegate.swift in Sources */,
+				65D44BDD2A91A15500F1CC50 /* VUCalendarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
