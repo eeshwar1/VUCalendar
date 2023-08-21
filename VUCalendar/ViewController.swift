@@ -8,19 +8,17 @@
 import Cocoa
 
 class ViewController: NSViewController {
+    
+    @IBOutlet var calendarView: VUCalendarView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.calendarView = VUCalendarView()
+        self.calendarView.highlightBorderColor = NSColor.purple
+        self.calendarView.highlightBackgroundColor = NSColor.blue
     }
 
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
-
+  
 }
 
