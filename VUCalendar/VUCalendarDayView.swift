@@ -11,9 +11,12 @@ class VUCalendarDayView: NSView {
     
     var value: String = "0"
     
-    var highlightBackgroundColor: NSColor?
+    var highlightedBackgroundColor: NSColor?
     
-    var highlightBorderColor: NSColor?
+    var highlightedBorderColor: NSColor?
+    
+    fileprivate var dateLabel: NSTextField!
+    fileprivate var lineHeight: CGFloat
     
     var highlighted: Bool? {
         
@@ -23,19 +26,42 @@ class VUCalendarDayView: NSView {
         }
     }
 
+    open var font: NSFont {
+          didSet {
+              self.dateLabel.font = font
+              self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
+          }
+      }
+    
+    open var textColor: NSColor? {
+           didSet {
+               self.dateLabel.textColor = textColor
+           }
+    }
     
     fileprivate var trackingArea: NSTrackingArea?
     
     init(frame frameRect: NSRect, value: String) {
         
-        super.init(frame: frameRect)
+        self.font = NSFont.systemFont(ofSize: 20.0)
+        self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
+        
         
         self.value = value
+    
+        
+        super.init(frame: frameRect)
+        
         
         setupSubviews()
     }
     
     required init?(coder: NSCoder) {
+        
+        self.font = NSFont.systemFont(ofSize: 20.0)
+        self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
+    
+        
         super.init(coder: coder)
         
         setupSubviews()
@@ -45,17 +71,17 @@ class VUCalendarDayView: NSView {
         
        
         let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: NSColor.black,
-            .font: NSFont.systemFont(ofSize: 18)
+            .font: self.font
         ]
 
-        
         let text = NSAttributedString(string: value, attributes: attributes)
         
         let dateLabel = NSTextField(labelWithAttributedString: text)
         dateLabel.alignment = .center
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.dateLabel = dateLabel
         
         self.addSubview(dateLabel)
         
@@ -72,7 +98,7 @@ class VUCalendarDayView: NSView {
     
     override func draw(_ dirtyRect: NSRect) {
         
-        super.draw(dirtyRect)
+       super.draw(dirtyRect)
         
         // Circle selection
        let width = self.bounds.height * 0.9
@@ -80,32 +106,24 @@ class VUCalendarDayView: NSView {
        let pathFrame = CGRect(x: (self.bounds.width - width)/2.0, y: (self.bounds.height - height)/2.0, width: width, height: height);
        let path = NSBezierPath(ovalIn: pathFrame)
         
-        // print("highlighted: \(String(describing: self.highlighted))")
-        if self.highlighted == true {
+  
+       if self.highlighted == true {
              
-            // print("highlighted")
+     //       print("\(String(describing: self.highlightedBorderColor))")
             
-            if let color = self.highlightBorderColor {
+            if let color = self.highlightedBorderColor {
                 
                 color.setStroke()
                 path.stroke()
-            } else {
-                
-                NSColor.red.setStroke()
-                path.stroke()
             }
+
             
-            if let color = self.highlightBackgroundColor {
+            if let color = self.highlightedBackgroundColor {
                 
                 color.setFill()
                 path.fill()
-            } else {
-                
-                NSColor.lightGray.setFill()
-                path.fill()
             }
-           
-            
+         
            
         }
         
@@ -123,7 +141,7 @@ class VUCalendarDayView: NSView {
     
     override open func mouseEntered(with theEvent: NSEvent) {
        
-        // print("mouse entered")
+//        print("mouse entered")
         self.highlighted = true
        
         
@@ -131,7 +149,7 @@ class VUCalendarDayView: NSView {
     
     override open func mouseExited(with theEvent: NSEvent) {
         
-        // print("mouse exited")
+//        print("mouse exited")
         self.highlighted = false
         
     }

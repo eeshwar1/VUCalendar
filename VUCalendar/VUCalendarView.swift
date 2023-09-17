@@ -20,24 +20,119 @@
         fileprivate(set) open var monthBackButton: NSButton!
         fileprivate(set) open var monthForwardButton: NSButton!
         
+        fileprivate var currentHeight: Int
+        fileprivate var lineHeight: CGFloat
+        
         fileprivate var firstDayComponents: DateComponents!
         
-        @objc open var highlightBackgroundColor: NSColor? {
-            
+        
+        @objc open var todayTextColor: NSColor? {
+               didSet {
+                   updateDaysView()
+               }
+        }
+        
+        @objc open var backgroundColor: NSColor? {
             didSet {
-                
-             //   print("calling updateDaysView from highlightBackgroundColor didSet")
+                self.setNeedsDisplay(self.bounds)
+            }
+        }
+        
+        @objc open var titleFont: NSFont {
+            didSet {
+                configureViewAppearance()
+            }
+        }
+        
+        fileprivate func configureViewAppearance() {
+            
+            self.monthLabel.font = self.titleFont
+            self.addSubview(self.monthLabel)
+        }
+        
+        @objc open var font: NSFont {
+            didSet {
+                self.lineHeight = VUCalendarView.lineHeightForFont(font)
+                configureViewAppearance()
+            }
+        }
+        
+        @objc open var textColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+       
+        @objc open var selectedTextColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        @objc open var selectedBackgroundColor: NSColor? {
+            didSet {
                 updateDaysView()
             }
         }
         
-        @objc open var highlightBorderColor: NSColor? {
-            
+        @objc open var selectedBorderColor: NSColor? {
             didSet {
-                
-                // print("calling updateDaysView from highlightBorderColor didSet")
                 updateDaysView()
             }
+        }
+        
+        @objc open var highlightedBackgroundColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        @objc open var highlightedBorderColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        
+        @objc open var todayBackgroundColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        @objc open var todayBorderColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        @objc open var nextMonthTextColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        @objc open var previousMonthTextColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        @objc open var markColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        
+        @objc open var todayMarkColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+            
+        @objc open var selectedMarkColor: NSColor? {
+            didSet {
+                updateDaysView()
+            }
+        }
+        
+        open class func lineHeightForFont(_ font: NSFont) -> CGFloat {
+               let attribs = NSDictionary(object: font, forKey: NSAttributedString.Key.font as NSCopying)
+               let size = "Aa".size(withAttributes: attribs as? [NSAttributedString.Key: Any])
+               return round(size.height)
         }
         
         var date = Date()
@@ -47,25 +142,44 @@
         
         override public init(frame frameRect: NSRect) {
             
+            self.currentHeight = 0
+            self.font = NSFont.systemFont(ofSize: 24.0)
+            self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
+            self.titleFont = NSFont.boldSystemFont(ofSize: 36.0)
+            self.monthLabel = NSTextField(frame: NSZeroRect)
+            
             super.init(frame: frameRect)
             
             setupVariables()
             
             setupSubViews()
-            
+          
         }
         
         
         required init?(coder: NSCoder) {
             
+            self.currentHeight = 0
+            self.font = NSFont.systemFont(ofSize: 24.0)
+            self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
+            self.titleFont = NSFont.boldSystemFont(ofSize: 36.0)
+            self.monthLabel = NSTextField(frame: NSZeroRect)
+           
             super.init(coder: coder)
             
             setupVariables()
             
             setupSubViews()
+            
+            
         }
         
+        
         func setupSubViews() {
+            
+            self.currentHeight = 0
+            self.font = NSFont.systemFont(ofSize: 12.0)
+            self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
             
             configureDateFormatter()
             
@@ -78,10 +192,10 @@
         
         func setupVariables() {
             
-            
             self.firstDayComponents = firstDayOfMonthForDate(self.date)
             
         }
+        
         func setupTitleRow() {
             
             let paragraphStyle = NSMutableParagraphStyle()
@@ -89,7 +203,7 @@
             
             let monthlyLabelAttributes: [NSAttributedString.Key: Any] = [
                 .foregroundColor: NSColor.black,
-                .font: NSFont.systemFont(ofSize: 24),
+                .font: self.titleFont,
                 .paragraphStyle: paragraphStyle
             ]
 
@@ -155,23 +269,25 @@
             
             let monthlyLabelAttributes: [NSAttributedString.Key: Any] = [
                 .foregroundColor: NSColor.black,
-                .font: NSFont.systemFont(ofSize: 24),
+                .font: self.titleFont,
                 .paragraphStyle: paragraphStyle
             ]
 
             let monthLabelText = NSAttributedString(string: monthAndYearForDay(self.firstDayComponents), attributes: monthlyLabelAttributes)
             
             self.monthLabel.attributedStringValue = monthLabelText
-            // self.monthLabel.stringValue = monthAndYearForDay(self.firstDayComponents)
+    
+            self.needsDisplay = true
                
         }
         
         func updateDaysView() {
             
-            // print("updateDaysView")
+//             print("updateDaysView")
+//
+//             print("Highlight Border    : \(String(describing: self.highlightBorderColor))")
+//             print("Highlight Background: \(String(describing: self.highlightBackgroundColor))")
             
-            // print("Border    : \(String(describing: self.highlightBorderColor))")
-            // print("Background: \(String(describing: self.highlightBackgroundColor))")
             for dayView in self.dayViews {
                 
                 dayView.removeFromSuperview()
@@ -206,9 +322,13 @@
                 
                 let dayView = VUCalendarDayView(frame: NSMakeRect(originX, row * viewHeight, viewWidth, viewHeight), value: String(_date.day!))
                 
-                dayView.highlightBackgroundColor = self.highlightBackgroundColor
-                dayView.highlightBorderColor = self.highlightBorderColor
+                dayView.highlightedBackgroundColor = self.highlightedBackgroundColor
+                dayView.highlightedBorderColor = self.highlightedBorderColor
                 
+                if VUCalendarView.isEqualDay(_date, anotherDate: Date()) {
+                    
+                    dayView.textColor = self.todayTextColor
+                }
                 self.dayViews.append(dayView)
                 
                 self.addSubview(dayView)
@@ -221,8 +341,11 @@
         }
         override func draw(_ dirtyRect: NSRect) {
 
-            NSColor.white.setFill()
-            dirtyRect.fill()
+
+            if let color = self.backgroundColor {
+                        color.setFill()
+                        dirtyRect.fill()
+            }
             
             super.draw(dirtyRect)
             
@@ -304,6 +427,18 @@
             newDateComponents.year = dateComponents.year
             let oneMonthLaterDay = self.calendar.date(from: newDateComponents)!
             return (self.calendar as NSCalendar).components(self.dateUnitMask, from: oneMonthLaterDay)
+        }
+        
+        class func isEqualDay(_ dateComponents: DateComponents, anotherDate: Date) -> Bool {
+               let calendar = Calendar.current
+               let anotherDateComponents = (calendar as NSCalendar).components([NSCalendar.Unit.year, NSCalendar.Unit.month, NSCalendar.Unit.day], from:anotherDate)
+               
+               if dateComponents.day == anotherDateComponents.day && dateComponents.month == anotherDateComponents.month
+                   && dateComponents.year == anotherDateComponents.year {
+                       return true
+               } else {
+                   return false
+               }
         }
         
     }
