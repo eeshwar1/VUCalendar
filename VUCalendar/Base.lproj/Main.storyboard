@@ -725,7 +725,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="calendarView" destination="EqN-dn-gbf" id="yKV-vj-oAv"/>
+                        <outlet property="calendarView" destination="EqN-dn-gbf" id="j9N-LR-2Hg"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
