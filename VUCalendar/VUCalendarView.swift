@@ -366,7 +366,7 @@ class VUCalendarView: NSView {
         self.needsDisplay = true
         
     }
-
+    
     
     func updateDaysView() {
         
@@ -377,29 +377,37 @@ class VUCalendarView: NSView {
         }
         self.dayViews.removeAll(keepingCapacity: true)
         
-        let viewWidth: CGFloat = floor(self.bounds.size.width/7)
-        let viewHeight: CGFloat = viewWidth
+        let firstWkDay = self.firstDayComponents.weekday
         
-        var col : CGFloat = 0
+        var visibledaysPreviousMonth = firstWkDay! - self.firstDayOfWeek
+        if visibledaysPreviousMonth < 0 {
+            visibledaysPreviousMonth += 7
+        }
+        visibledaysPreviousMonth *= -1
+        
+        for index in visibledaysPreviousMonth ..< 0 {
+            let dayComponents = dayByAddingDays(index, fromDate: firstDayComponents)
+            let dayView = VUCalendarDayView(dateComponents: dayComponents)
+            
+            dayView.font = font
+            dayView.textColor = self.previousMonthTextColor
+            dayView.highlightedBorderColor = self.highlightedBorderColor
+            dayView.highlightedBackgroundColor = self.highlightedBackgroundColor
+            
+            self.dayViews.append(dayView)
+            
+            self.addSubview(dayView)
+            
+            
+        }
         
         var _date = self.firstDayComponents!
-        var originX = self.bounds.minX
-        var originY = NSMaxY(self.monthButton.frame) + 2 * lineHeight
-        var nextLine = false
         
         for _ in 1...daysCountInMonthForDay(self.firstDayComponents) {
             
-            if nextLine == true {
-                
-                nextLine = false
-                originY += viewHeight
-            }
-            col = CGFloat(columnForWeekday(_date.weekday!))
-//            print("column for \(_date) is \(col)")
-            originX = viewWidth * col
-          
-            let dayView = VUCalendarDayView(frame: NSMakeRect(originX, originY, viewWidth, viewHeight), value: String(_date.day!))
-        
+            
+            let dayView = VUCalendarDayView(dateComponents: _date)
+            
             dayView.highlightedBackgroundColor = self.highlightedBackgroundColor
             dayView.highlightedBorderColor = self.highlightedBorderColor
             
@@ -413,18 +421,68 @@ class VUCalendarView: NSView {
             
             _date = dayByAddingDays(1, fromDate: _date)
             
+            
+        }
+        
+        // Next month
+        var visibleDaysNextMonth = self.firstDayOfWeek + 7 - (_date.weekday!)
+        if visibleDaysNextMonth > 7 {
+            visibleDaysNextMonth -= 7
+        }
+        for _ in 1 ... visibleDaysNextMonth {
+            
+            let dayView = VUCalendarDayView(dateComponents: _date)
+            
+            dayView.font = font
+            dayView.textColor = self.nextMonthTextColor
+            dayView.highlightedBorderColor = self.highlightedBorderColor
+            dayView.highlightedBackgroundColor = self.highlightedBackgroundColor
+            
+            self.dayViews.append(dayView)
+            
+            self.addSubview(dayView)
+            
+            _date = dayByAddingDays(1, fromDate: _date)
+        }
+        layoutDayViews()
+        
+    }
+    
+    func layoutDayViews() {
+        
+        let viewWidth: CGFloat = floor(self.bounds.size.width/7)
+        let viewHeight: CGFloat = viewWidth
+        
+        var col : CGFloat = 0
+        
+        var originX = self.bounds.minX
+        var originY = NSMaxY(self.monthButton.frame) +  lineHeight
+        var nextLine = false
+        
+        
+        for dayView in self.dayViews {
+            
+            if nextLine == true {
+                
+                nextLine = false
+                originY += viewHeight
+            }
+            
+            col = CGFloat(columnForWeekday(dayView.dateComponents.weekday!))
+            originX = viewWidth * col
+            
+            dayView.frame = NSMakeRect(originX, originY, viewWidth, viewHeight)
+            
             if (col == 6) {
                 
                 originX = 0
                 nextLine = true
-            
+                
             } else {
-
+                
                 originX += viewWidth
             }
-            
         }
-        
         
     }
     override func draw(_ dirtyRect: NSRect) {
@@ -506,7 +564,7 @@ class VUCalendarView: NSView {
             
         }
         
-//        print("\(self.weekdays)")
+        //        print("\(self.weekdays)")
     }
     
     fileprivate func weekdayNameForColumn(_ column: Int) -> String {

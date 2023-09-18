@@ -11,6 +11,8 @@ class VUCalendarDayView: NSView {
     
     var value: String = "0"
     
+    public let dateComponents: DateComponents
+    
     var highlightedBackgroundColor: NSColor?
     
     var highlightedBorderColor: NSColor?
@@ -41,26 +43,23 @@ class VUCalendarDayView: NSView {
     
     fileprivate var trackingArea: NSTrackingArea?
     
-    init(frame frameRect: NSRect, value: String) {
+    
+    init(dateComponents: DateComponents) {
         
         self.font = NSFont.systemFont(ofSize: 20.0)
         self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
         
-        self.value = value
+        self.dateComponents = dateComponents
             
-        super.init(frame: frameRect)
+        super.init(frame: NSZeroRect)
         
         setupSubviews()
+        
     }
     
     required init?(coder: NSCoder) {
         
-        self.font = NSFont.systemFont(ofSize: 20.0)
-        self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
-        
-        super.init(coder: coder)
-        
-        setupSubviews()
+        fatalError("init(coder:) has not been implemented")
     }
     
     func setupSubviews() {
@@ -70,7 +69,7 @@ class VUCalendarDayView: NSView {
             .font: self.font
         ]
 
-        let text = NSAttributedString(string: value, attributes: attributes)
+        let text = NSAttributedString(string: "\(self.dateComponents.day!)", attributes: attributes)
         
         let dateLabel = NSTextField(labelWithAttributedString: text)
         dateLabel.alignment = .center
