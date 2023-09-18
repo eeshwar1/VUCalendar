@@ -46,12 +46,9 @@ class VUCalendarDayView: NSView {
         self.font = NSFont.systemFont(ofSize: 20.0)
         self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
         
-        
         self.value = value
-    
-        
+            
         super.init(frame: frameRect)
-        
         
         setupSubviews()
     }
@@ -60,7 +57,6 @@ class VUCalendarDayView: NSView {
         
         self.font = NSFont.systemFont(ofSize: 20.0)
         self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
-    
         
         super.init(coder: coder)
         
@@ -88,12 +84,9 @@ class VUCalendarDayView: NSView {
         let centerXConstraint = NSLayoutConstraint(item: dateLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0)
         let centerYConstraint = NSLayoutConstraint(item: dateLabel, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0)
         
-        
         self.addConstraint(centerXConstraint)
         self.addConstraint(centerYConstraint)
-        
-        
-        
+
     }
     
     override func draw(_ dirtyRect: NSRect) {
@@ -108,9 +101,7 @@ class VUCalendarDayView: NSView {
         
   
        if self.highlighted == true {
-             
-     //       print("\(String(describing: self.highlightedBorderColor))")
-            
+
             if let color = self.highlightedBorderColor {
                 
                 color.setStroke()
@@ -140,8 +131,7 @@ class VUCalendarDayView: NSView {
     }
     
     override open func mouseEntered(with theEvent: NSEvent) {
-       
-//        print("mouse entered")
+
         self.highlighted = true
        
         
@@ -149,7 +139,6 @@ class VUCalendarDayView: NSView {
     
     override open func mouseExited(with theEvent: NSEvent) {
         
-//        print("mouse exited")
         self.highlighted = false
         
     }

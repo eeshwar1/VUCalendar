@@ -28,6 +28,7 @@ class ViewController: NSViewController {
         calendarView.font = NSFont.systemFont(ofSize: 24.0)
         calendarView.titleFont = NSFont.boldSystemFont(ofSize: 36.0)
         
+        
         // Text color
         calendarView.textColor = NSColor.black
         calendarView.todayTextColor = NSColor.red
