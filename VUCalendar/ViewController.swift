@@ -9,37 +9,49 @@ import Cocoa
 
 class ViewController: NSViewController {
     
-    @IBOutlet var calendarView: VUCalendarView!
-
-    override func viewDidLoad() {
+    var calendarView: VUCalendarView!
+    @IBOutlet var statusMenu: NSMenu!
+    
+    let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    
+    override func awakeFromNib() {
         
-        super.viewDidLoad()
-       
+        statusItem.menu = statusMenu
+        
+        let icon = NSImage(systemSymbolName: "calendar", accessibilityDescription: "calendar")
+        
+        statusItem.button?.image = icon
+        
+        let calendarMenuItem = statusMenu.item(withTitle: "CalendarView")
+        
+        self.calendarView = VUCalendarView(frame: NSMakeRect(0, 0, 300, 300))
         setupCalendarView()
+        
+        calendarMenuItem!.view = self.calendarView
+        
     }
+
 
     func setupCalendarView() {
         
-//        print("setupCalendarView")
         calendarView.autoresizingMask = NSView.AutoresizingMask.minYMargin
         
         // Background color, font size
-        calendarView.backgroundColor = NSColor.white
-        calendarView.font = NSFont.systemFont(ofSize: 24.0)
-        calendarView.titleFont = NSFont.boldSystemFont(ofSize: 36.0)
-        
+        calendarView.backgroundColor = NSColor.clear
+        calendarView.font = NSFont.systemFont(ofSize: 14.0)
+        calendarView.titleFont = NSFont.boldSystemFont(ofSize: 16.0)
         
         // Text color
-        calendarView.textColor = NSColor.black
+        calendarView.textColor = NSColor.textColor
         calendarView.todayTextColor = NSColor.red
         calendarView.selectedTextColor = NSColor.white
-//
-//        // Markers
+
+        // Markers
         calendarView.markColor = NSColor.darkGray
         calendarView.todayMarkColor = NSColor.red
         calendarView.selectedMarkColor = NSColor.white
-//
-//        // Today
+
+        // Today
         calendarView.todayBackgroundColor = NSColor.red
         calendarView.todayBorderColor = NSColor.red
         
@@ -47,13 +59,13 @@ class ViewController: NSViewController {
         calendarView.selectedBackgroundColor = NSColor.lightGray
         calendarView.selectedBorderColor = NSColor.lightGray
         
-//        // Next & previous month days
+        // Next & previous month days
         calendarView.nextMonthTextColor = NSColor.gray
         calendarView.previousMonthTextColor = NSColor.gray;
 
         // 'Mouse-over' highlight
-        calendarView.highlightedBackgroundColor = NSColor(white: 0.95, alpha: 1.0)
-        calendarView.highlightedBorderColor = NSColor(white: 0.95, alpha: 1.0)
+        calendarView.highlightedBackgroundColor = NSColor.highlightColor
+        calendarView.highlightedBorderColor = NSColor.highlightColor
     
         calendarView.setNeedsDisplay(calendarView.bounds)
        

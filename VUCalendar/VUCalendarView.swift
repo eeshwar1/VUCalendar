@@ -152,9 +152,9 @@ class VUCalendarView: NSView {
     override public init(frame frameRect: NSRect) {
         
         self.currentHeight = 0
-        self.font = NSFont.systemFont(ofSize: 24.0)
+        self.font = NSFont.systemFont(ofSize: 12.0)
         self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
-        self.titleFont = NSFont.boldSystemFont(ofSize: 36.0)
+        self.titleFont = NSFont.boldSystemFont(ofSize: 16.0)
         self.monthButton = NSButton(frame: NSZeroRect)
         
         super.init(frame: frameRect)
@@ -169,9 +169,9 @@ class VUCalendarView: NSView {
     required init?(coder: NSCoder) {
         
         self.currentHeight = 0
-        self.font = NSFont.systemFont(ofSize: 24.0)
+        self.font = NSFont.systemFont(ofSize: 12.0)
         self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
-        self.titleFont = NSFont.boldSystemFont(ofSize: 36.0)
+        self.titleFont = NSFont.boldSystemFont(ofSize: 16.0)
         self.monthButton = NSButton(frame: NSZeroRect)
         
         super.init(coder: coder)
@@ -209,11 +209,13 @@ class VUCalendarView: NSView {
     
     func setupTitleRow() {
         
+        let buttonDimension = self.frame.height/10
+        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         
         let monthlyTitleAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: NSColor.black,
+            .foregroundColor: NSColor.textColor,
             .font: self.titleFont,
             .paragraphStyle: paragraphStyle
         ]
@@ -222,7 +224,7 @@ class VUCalendarView: NSView {
         
         let margin: CGFloat = 60
         
-        self.monthButton = NSButton(frame: NSMakeRect(margin, 0, self.bounds.size.width - 2 * margin, 50))
+        self.monthButton = NSButton(frame: NSMakeRect(margin, 0, self.bounds.size.width - 2 * margin, buttonDimension))
         
         self.monthButton.cell?.truncatesLastVisibleLine = true
         self.monthButton.cell?.lineBreakMode = .byTruncatingTail
@@ -235,14 +237,15 @@ class VUCalendarView: NSView {
         self.monthBackButton = NSButton(frame: NSZeroRect)
         self.monthForwardButton = NSButton(frame: NSZeroRect)
         
-        self.monthBackButton.frame = NSMakeRect(0, 0, 50, 50)
-        self.monthForwardButton.frame = NSMakeRect(self.bounds.size.width - 50, 0, 50, 50)
+        
+        self.monthBackButton.frame = NSMakeRect(0, 0, buttonDimension, buttonDimension)
+        self.monthForwardButton.frame = NSMakeRect(self.bounds.size.width - buttonDimension, 0, buttonDimension, buttonDimension)
         
         self.monthBackButton.title = "<"
         self.monthBackButton.alignment = NSTextAlignment.center
         let backBtnCell = self.monthBackButton.cell as! NSButtonCell
         backBtnCell.bezelStyle = NSButton.BezelStyle.regularSquare
-        backBtnCell.font = NSFont.systemFont(ofSize: 20)
+        backBtnCell.font = NSFont.systemFont(ofSize: 16)
         self.monthBackButton.target = self
         self.monthBackButton.action = #selector(self.monthBackAction(_:))
         self.addSubview(self.monthBackButton)
@@ -251,7 +254,7 @@ class VUCalendarView: NSView {
         self.monthForwardButton.alignment = NSTextAlignment.center
         let forwardBtnCell = self.monthForwardButton.cell as! NSButtonCell
         forwardBtnCell.bezelStyle = NSButton.BezelStyle.regularSquare
-        forwardBtnCell.font = NSFont.systemFont(ofSize: 20)
+        forwardBtnCell.font = NSFont.systemFont(ofSize: 16)
         self.monthForwardButton.target = self
         self.monthForwardButton.action = #selector(self.monthForwardAction(_:))
         self.addSubview(self.monthForwardButton)
@@ -335,7 +338,7 @@ class VUCalendarView: NSView {
         paragraphStyle.alignment = .center
         
         let monthlyLabelAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: NSColor.black,
+            .foregroundColor: NSColor.textColor,
             .font: self.titleFont,
             .paragraphStyle: paragraphStyle
         ]
@@ -354,7 +357,7 @@ class VUCalendarView: NSView {
         paragraphStyle.alignment = .center
         
         let weekdayLabelAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: NSColor.black,
+            .foregroundColor: NSColor.textColor,
             .font: NSFont.boldSystemFont(ofSize: self.font.pointSize),
             .paragraphStyle: paragraphStyle
         ]
@@ -451,14 +454,13 @@ class VUCalendarView: NSView {
     func layoutDayViews() {
         
         let viewWidth: CGFloat = floor(self.bounds.size.width/7)
-        let viewHeight: CGFloat = viewWidth
+        let viewHeight: CGFloat = viewWidth * 0.9
         
         var col : CGFloat = 0
         
         var originX = self.bounds.minX
-        var originY = NSMaxY(self.monthButton.frame) +  lineHeight
+        var originY = NSMaxY(self.monthButton.frame) +  2 * lineHeight
         var nextLine = false
-        
         
         for dayView in self.dayViews {
             

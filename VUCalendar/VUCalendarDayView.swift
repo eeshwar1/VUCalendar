@@ -46,7 +46,7 @@ class VUCalendarDayView: NSView {
     
     init(dateComponents: DateComponents) {
         
-        self.font = NSFont.systemFont(ofSize: 20.0)
+        self.font = NSFont.systemFont(ofSize: 14.0)
         self.lineHeight = VUCalendarView.lineHeightForFont(self.font)
         
         self.dateComponents = dateComponents
