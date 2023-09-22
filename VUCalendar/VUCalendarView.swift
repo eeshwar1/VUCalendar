@@ -19,6 +19,8 @@ class VUCalendarView: NSView {
     fileprivate(set) open var monthButton: NSButton!
     fileprivate(set) open var monthBackButton: NSButton!
     fileprivate(set) open var monthForwardButton: NSButton!
+    fileprivate(set) open var yearBackButton: NSButton!
+    fileprivate(set) open var yearForwardButton: NSButton!
     
     fileprivate var currentHeight: Int
     fileprivate var lineHeight: CGFloat
@@ -234,12 +236,36 @@ class VUCalendarView: NSView {
         self.monthButton.action = #selector(self.showToday(_:))
         self.addSubview(monthButton)
         
+        self.yearBackButton = NSButton(frame: NSZeroRect)
+        self.yearForwardButton = NSButton(frame: NSZeroRect)
+        
+        self.yearBackButton.frame = NSMakeRect(0, 0, 1.2 * buttonDimension, buttonDimension)
+        self.yearForwardButton.frame = NSMakeRect(self.bounds.size.width -  1.2 * buttonDimension, 0,  1.2 * buttonDimension, buttonDimension)
+        
+        self.yearBackButton.title = "<<"
+        self.yearBackButton.alignment = NSTextAlignment.center
+        let yearBackBtnCell = self.yearBackButton.cell as! NSButtonCell
+        yearBackBtnCell.bezelStyle = NSButton.BezelStyle.regularSquare
+        yearBackBtnCell.font = NSFont.systemFont(ofSize: 16)
+        self.yearBackButton.target = self
+        self.yearBackButton.action = #selector(self.yearBackAction(_:))
+        self.addSubview(self.yearBackButton)
+        
+        self.yearForwardButton.title = ">>"
+        self.yearForwardButton.alignment = NSTextAlignment.center
+        let yearForwardBtnCell = self.yearForwardButton.cell as! NSButtonCell
+        yearForwardBtnCell.bezelStyle = NSButton.BezelStyle.regularSquare
+        yearForwardBtnCell.font = NSFont.systemFont(ofSize: 16)
+        self.yearForwardButton.target = self
+        self.yearForwardButton.action = #selector(self.yearForwardAction(_:))
+        self.addSubview(self.yearForwardButton)
+        
         self.monthBackButton = NSButton(frame: NSZeroRect)
         self.monthForwardButton = NSButton(frame: NSZeroRect)
         
         
-        self.monthBackButton.frame = NSMakeRect(0, 0, buttonDimension, buttonDimension)
-        self.monthForwardButton.frame = NSMakeRect(self.bounds.size.width - buttonDimension, 0, buttonDimension, buttonDimension)
+        self.monthBackButton.frame = NSMakeRect(1.1 * buttonDimension, 0, buttonDimension, buttonDimension)
+        self.monthForwardButton.frame = NSMakeRect(self.bounds.size.width - 2.1 * buttonDimension, 0, buttonDimension, buttonDimension)
         
         self.monthBackButton.title = "<"
         self.monthBackButton.alignment = NSTextAlignment.center
@@ -316,6 +342,21 @@ class VUCalendarView: NSView {
         self.firstDayComponents = oneMonthEarlierDayForDay(self.firstDayComponents)
         updateCurrentMonthButton()
         updateDaysView()
+    }
+    
+    @objc open func yearBackAction(_ sender: NSButton?) {
+        
+        self.firstDayComponents = oneYearEarlierDayForDay(self.firstDayComponents)
+        updateCurrentMonthButton()
+        updateDaysView()
+    }
+    
+    @objc open func yearForwardAction(_ sender: NSButton?) {
+       
+        self.firstDayComponents = oneYearLaterDayForDay(self.firstDayComponents)
+        updateCurrentMonthButton()
+        updateDaysView()
+        
     }
     
     @objc open func showToday(_ sender: NSButton?) {
@@ -593,6 +634,15 @@ class VUCalendarView: NSView {
         return (self.calendar as NSCalendar).components(self.dateUnitMask, from: day)
     }
     
+    fileprivate func oneMonthEarlierDayForDay(_ dateComponents: DateComponents) -> DateComponents {
+        var newDateComponents = DateComponents()
+        newDateComponents.day = dateComponents.day
+        newDateComponents.month = dateComponents.month! - 1
+        newDateComponents.year = dateComponents.year
+        let oneMonthLaterDay = self.calendar.date(from: newDateComponents)!
+        return (self.calendar as NSCalendar).components(self.dateUnitMask, from: oneMonthLaterDay)
+    }
+    
     fileprivate func oneMonthLaterDayForDay(_ dateComponents: DateComponents) -> DateComponents {
         var newDateComponents = DateComponents()
         newDateComponents.day = dateComponents.day
@@ -602,11 +652,20 @@ class VUCalendarView: NSView {
         return (self.calendar as NSCalendar).components(self.dateUnitMask, from: oneMonthLaterDay)
     }
     
-    fileprivate func oneMonthEarlierDayForDay(_ dateComponents: DateComponents) -> DateComponents {
+    fileprivate func oneYearEarlierDayForDay(_ dateComponents: DateComponents) -> DateComponents {
         var newDateComponents = DateComponents()
         newDateComponents.day = dateComponents.day
-        newDateComponents.month = dateComponents.month! - 1
-        newDateComponents.year = dateComponents.year
+        newDateComponents.month = dateComponents.month
+        newDateComponents.year = dateComponents.year! - 1
+        let oneMonthLaterDay = self.calendar.date(from: newDateComponents)!
+        return (self.calendar as NSCalendar).components(self.dateUnitMask, from: oneMonthLaterDay)
+    }
+    
+    fileprivate func oneYearLaterDayForDay(_ dateComponents: DateComponents) -> DateComponents {
+        var newDateComponents = DateComponents()
+        newDateComponents.day = dateComponents.day
+        newDateComponents.month = dateComponents.month
+        newDateComponents.year = dateComponents.year! + 1
         let oneMonthLaterDay = self.calendar.date(from: newDateComponents)!
         return (self.calendar as NSCalendar).components(self.dateUnitMask, from: oneMonthLaterDay)
     }
